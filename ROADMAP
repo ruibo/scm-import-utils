@@ -1,0 +1,86 @@
+Outline of project idea.
+
+a) Import file containing source code from foreign language - use ihooks.
+     1) custom finder. Add finder to sys.meta_path
+     2) custom loader. Create module.
+   See PEP 302, importlib, and imp.
+
+b) Create module - I can use the built-in function eval with handmade code object.
+ 
+   Sketch:
+
+   >>> mymod = imp.new_module(name)
+   >>> eval(handmade_co_obj, g, mymod.__dict__)
+
+c) Create handmade code object.
+
+   Need to call code constructor. This takes a lot of arguments.
+
+      code(argcount, nlocals, stacksize, flags, codestring, constants, names, varnames, filename, name, firstlineno, lnotab[, freevars[, cellvars]])
+
+   The important bit - codestring is the string of Python bytecodes.
+
+   
+   Scheme:
+
+   The beauty of Scheme is that there are only six special forms, plus three other syntactic constructs -
+   variables, constants, and procedure calls.
+
+   Form        Syntax                Semantics and Example
+   ------------------------------------------------------------------------------
+   quotation    (quote exp)           Return the exp literally; do not evaluate it
+   conditional  (if test conseq alt)  Exalute test; if true, evaluate and return conseq;
+                                      otherwise evalutate and return alt
+   assignment   (set! var exp)        Evaluate exp and assign the value to var, which
+                                      must have been previously assigned.
+   definition   (define var exp)      Define a new variable and give it the value of 
+                                      evaluating the expression exp.
+   procedure    (lambda (var...) exp) Create a procedure with parameter(s) named var...
+                                      and the expression exp as the body.
+   sequencing   (begin exp...)        Evaluate each of the expressions in left-to-right
+                                      order, and return the final value.
+   procedure    (proc exp...)         If proc is anything other than on of the above symbols,
+                                      then it is treated as a procedure. All of the expressions
+                                      are evaluated and then the procedure is called with
+                                      the list of arguments.
+   variable     var                   A symbol is interpreted as a variable.
+   constant     number                A number evaluates to itself.
+
+   Code Gen:
+
+   I need to generate code for all of the syntactic constructs.
+    
+
+
+Open questions:
+
+1. What are all those arguments to code constructor?
+
+
+Example python exploration code:
+
+>>> script = """a = 2
+... b = [1,2,3]
+... def f():
+...     pass
+... """
+>>> cobj = compile(script, '<string>', 'exec')
+>>> cobj
+<code object <module> at 0x103fb5030, file "<string>", line 1>
+>>> import imp
+>>> mod = imp.new_module('example')
+>>> eval(cobj, globals(), mod.__dict__)
+>>> mod
+<module 'example' (built-in)>
+>>> dir(mod)
+['__doc__', '__name__', '__package__', 'a', 'b', 'f']
+>>> mod.a
+2
+>>> mod.b
+[1, 2, 3]
+>>> mod.f
+<function f at 0x103fbfaa0>
+>>> 
+
+
+
