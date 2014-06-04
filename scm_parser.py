@@ -1,7 +1,13 @@
 """Parser Parses lisp expressions.
 
 This code is based on Peter Norvig's lis.py implementation 
-of a subset of Scheme in Python. 
+of a subset of Scheme in Python. Peter's essays about 
+implementing a lisp interpreter in Python are highly recommended.
+Visit the following sites:
+
+http://norvig.com/lispy.html
+http://norvig.com/lispy2.html
+ 
 """
 def tokenize(s):
     """Tokenize a string into Scheme tokens.

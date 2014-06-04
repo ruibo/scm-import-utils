@@ -20,6 +20,10 @@ c) Create handmade code object.
 
    The important bit - codestring is the string of Python bytecodes.
 
+   For the bytecode generation, I've been playing around with 
+   BytecodeAssembler: 
+
+   http://peak.telecommunity.com/DevCenter/BytecodeAssembler
    
    Scheme:
 

@@ -3,6 +3,7 @@
 import sys
 import os.path
 import imp # used to create module object
+from scm_compile import scm_compile
 
 class ScmFinder(object):
     """Find .scm file on the Python path.
@@ -41,6 +42,13 @@ class ScmLoader(object):
         mod_obj = imp.new_module(fullname)
         mod_obj.__file__ = self.filename
         sys.modules[fullname] = mod_obj
+        # read the file and compile
+        f = open(filename)
+        c = scm_compile(f.read())
+        close(f) 
+        # Use eval to evalute the code object with the locals workspace  
+        #   provided by the module object's dict.
+        eval(c, globals(), mod_obj.__dict__)
         return mod_obj
 
 # add to meta_path

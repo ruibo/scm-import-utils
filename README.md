@@ -1,4 +1,4 @@
 scm-import-utils
 ================
 
-Prototype work for importing Scheme code as a Python module.
+Sandbox development for importing Scheme code as a Python module.
