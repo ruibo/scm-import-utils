@@ -1,0 +1,82 @@
+import peak.util.assembler
+
+def gen_code(c, s_expr):
+    """Generate code.
+    """
+    if isinstance(s_expr, list):
+        gen_function(c, s_expr)
+    elif isinstance(s_expr, str):
+        gen_variable(c, s_expr)
+    elif isinstance(s_expr, (int, float)):
+        gen_constant(c, s_expr)
+    else:
+        raise TypeError('Not a valid expression for code generation.')
+
+def gen_set(c, s_expr):
+    """Generate code for set!
+
+    The syntax for set! is (set! ident expr)
+      Verify that the length of the S expression is 3.
+      Verify that the second element is the name of the variable.
+    """
+    if len(s_expr) != 3:
+        raise SyntaxError('Invalid set! expression.')
+    gen_code(c, s_expr[2])
+    c.STORE_NAME(s_expr[1])
+
+def gen_function(c, s_expr):
+    """Generate code for function call.
+
+    The syntax for a functions call is (name expr1, expr2,... exprN).
+    """
+    gen_variable(c, s_expr[0])
+    nargs = len(s_expr) - 1
+    for e in s_expr[1:]:
+        gen_code(c, e)
+    c.CALL_FUNCTION(nargs)
+
+def gen_variable(c, name):
+    """Generate code for an identifier.
+
+    LOAD_NAME by name.
+    """
+    c.LOAD_NAME(name)
+
+def gen_constant(c, val):
+    """Generate code for a literal.
+ 
+    LOAD_CONST of value val.
+    """
+    c.LOAD_CONST(val)
+
+
+if __name__=='__main__':
+    import unittest
+    from array import array
+    class TestCodeGen(unittest.TestCase):
+        def test_gen_constant(self):
+            c = peak.util.assembler.Code()
+            gen_constant(c, 23)
+            self.assertEqual(c.co_code, array('B', [100, 1, 0])) 
+            self.assertEqual(len(c.co_consts), 2)
+            self.assertEqual(c.co_consts, [None, 23])
+        def test_gen_variable(self):
+            c = peak.util.assembler.Code()
+            gen_variable(c, 'x')
+            self.assertEqual(c.co_code, array('B', [101, 0, 0]))
+            self.assertEqual(len(c.co_names), 1)
+            self.assertEqual(c.co_names, ['x'])
+        def test_gen_function_noargs(self):
+            c = peak.util.assembler.Code()
+            s_expr = ['foo']
+            gen_function(c, s_expr)
+            self.assertEqual(c.co_code, array('B', [101, 0, 0, 131, 0, 0]))
+            self.assertEqual(c.co_names, ['foo'])
+        def test_gen_function_arg(self):
+            c = peak.util.assembler.Code()
+            s_expr = ['foo', 'x']
+            gen_function(c, s_expr)
+            self.assertEqual(c.co_code, array('B', [101, 0, 0, 101, 1, 0, 131, 1, 0]))
+            self.assertEqual(c.co_names, ['foo', 'x'])
+    unittest.main()
+
