@@ -35,5 +35,20 @@ def parse(tokens):
         return token
 
 if __name__=='__main__':
-    pass
+    import unittest
+    class TestTokenizer(unittest.TestCase):
+        def test_empty_expression(self):
+            code = '()'
+            tokens = tokenize(code)
+            self.assertEqual(tokens, ['(', ')'])
+        def test_set_expression(self):
+            code = '(set! x 23)'
+            tokens = tokenize(code)
+            self.assertEqual(tokens, ['(', 'set!', 'x', '23', ')'])
+    class TestParser(unittest.TestCase):
+        def test_empty_expresion(self):
+            expExp = []
+            actExp = parse(['(', ')'])
+            self.assertEqual(len(actExp), len(expExp))
+    unittest.main()
 
