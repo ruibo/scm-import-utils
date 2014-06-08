@@ -32,7 +32,13 @@ def parse(tokens):
     elif token==')':
         raise SyntaxError('unexpected )')
     else:
-        return token
+        try:
+            return int(token)
+        except ValueError:
+            try:
+                return float(token)
+            except ValueError:
+                return token
 
 if __name__=='__main__':
     import unittest
@@ -42,6 +48,10 @@ if __name__=='__main__':
             tokens = tokenize(code)
             self.assertEqual(tokens, ['(', ')'])
         def test_set_expression(self):
+            code = '(+ x y)'
+            tokens = tokenize(code)
+            self.assertEqual(tokens, ['(', '+', 'x', 'y', ')'])
+        def test_expression_with_constant(self):
             code = '(set! x 23)'
             tokens = tokenize(code)
             self.assertEqual(tokens, ['(', 'set!', 'x', '23', ')'])
@@ -50,5 +60,15 @@ if __name__=='__main__':
             expExp = []
             actExp = parse(['(', ')'])
             self.assertEqual(len(actExp), len(expExp))
+        def test_expression_with_int(self):
+            expr = ['(', 'set!', 'x', '23', ')']
+            expExp = ['set!', 'x', 23]
+            actExp = parse(expr)
+            self.assertEqual(actExp, expExp)
+        def test_expression_with_float(self):
+            expr = ['(', 'set!', 'x', '23.', ')']
+            expExp = ['set!', 'x', 23.]
+            actExp = parse(expr)
+            self.assertEqual(actExp, expExp)
     unittest.main()
 

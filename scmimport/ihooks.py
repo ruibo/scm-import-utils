@@ -1,9 +1,9 @@
-"""ihooks for importing .scm files.
-"""
-import sys
+"""import hook for importing Scheme .scm source files."""
+import sys      # need to add imported module to sys.modules
 import os.path
-import imp # used to create module object
-from scm_compile import scm_compile
+import imp      # used to create module object
+
+from . import compile
 
 class ScmFinder(object):
     """Find .scm file on the Python path.
@@ -43,14 +43,11 @@ class ScmLoader(object):
         mod_obj.__file__ = self.filename
         sys.modules[fullname] = mod_obj
         # read the file and compile
-        f = open(filename)
-        c = scm_compile(f.read())
-        close(f) 
+        f = open(self.filename)
+        c = compile.scmcompile(f.read(), self.filename)
+        f.close() 
         # Use eval to evalute the code object with the locals workspace  
         #   provided by the module object's dict.
         eval(c, globals(), mod_obj.__dict__)
         return mod_obj
-
-# add to meta_path
-sys.meta_path.append(ScmFinder())
 
