@@ -8,8 +8,11 @@ def scmcompile(source, filename):
 
     Compile the source into a code object. Code objects can be executed by a call to eval().
     """
-    # parse the code into a parse tree.
-    parse_tree = parse(tokenize(source))
+    # parse the source code into a parse tree.
+    tokens = tokenize(source)
+    parse_tree = []
+    while tokens:
+        parse_tree.append(parse(tokens))
 
     # Do some initialization 
     # Note:
@@ -23,8 +26,9 @@ def scmcompile(source, filename):
     c.co_filename = filename
     c.co_flags = 64 # Not sure why?
 
-    # generate code from the tree
-    codegen.gen_code(c, parse_tree)    
+    # generate code from the parse tree
+    for node in parse_tree:
+        codegen.gen_code(c, node)    
 
     # Hack for now, need to load and return None.
     c.LOAD_CONST(None)

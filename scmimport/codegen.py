@@ -18,6 +18,8 @@ def gen_expression(c, s_expr):
     name = s_expr[0]
     if name=='set!':
         gen_set(c, s_expr)
+    elif name=='define':
+        gen_set(c, s_expr)
     else:
         gen_function(c, s_expr)
 
