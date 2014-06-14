@@ -1,7 +1,6 @@
-"""runtime functions needed by scmimport implementation of the Scheme programming language.
+"""runtime functions needed by scmimport
+implementation of the Scheme programming language.
 """
-
-# Operators 
 import operator
 
 # Arithmetic operators
@@ -18,9 +17,16 @@ lt = operator.lt
 ge = operator.ge
 le = operator.le
 
+
+# basic forms
+def iffunc(test, conseq, alt):
+    return conseq if test else alt
+
+
 # functions for list processing
 def car(x):
     return x[0]
+
+
 def cdr(x):
     return x[1:]
-
