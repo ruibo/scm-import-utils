@@ -1,3 +1,5 @@
-(set! x 42)
-(set! y (+ 2 2))
-(set! z 0)
+(define x 23)
+(define y 15)
+(define z 0)
+(define t (+ 2 3))
+(define a (if (= 2 3) (* 3 3) (* 4 4)))
