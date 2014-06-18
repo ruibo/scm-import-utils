@@ -28,6 +28,12 @@ def scmcompile(source, filename):
     c.co_filename = filename
     c.co_flags = 64  # Not sure why?
 
+    # Hack for now to load the runtime library.
+    c.LOAD_CONST(-1)
+    c.LOAD_CONST(None)
+    c.IMPORT_NAME('scmimport.runtime')
+    c.STORE_NAME('scmimport')
+
     # generate code from the parse tree
     for node in parse_tree:
         codegen.gen_code(c, node)

@@ -1,4 +1,6 @@
 import peak.util.assembler
+from . import runtime
+runtime = runtime.__runtime__
 
 
 def gen_code(c, s_expr):
@@ -44,7 +46,9 @@ def gen_function(c, s_expr):
 
     The syntax for a functions call is (name expr1, expr2,... exprN).
     """
-    gen_variable(c, s_expr[0])
+    # check if the function is a run-time function.
+    name = runtime.get(s_expr[0], s_expr[0])
+    gen_variable(c, name)
     nargs = len(s_expr) - 1
     for e in s_expr[1:]:
         gen_code(c, e)
@@ -56,7 +60,13 @@ def gen_variable(c, name):
 
     LOAD_NAME by name.
     """
-    c.LOAD_NAME(name)
+    if '.' in name:
+        parts = name.split('.')
+        c.LOAD_NAME(parts[0])
+        for attr in parts[1:]:
+            c.LOAD_ATTR(attr)
+    else:
+        c.LOAD_NAME(name)
 
 
 def gen_constant(c, val):
