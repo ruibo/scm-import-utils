@@ -73,3 +73,7 @@ class TestCodeGen(unittest.TestCase):
                                 131, 2, 0]))
         self.assertEqual(self.c.co_consts, [None, 2, 3, 4])
         self.assertEqual(self.c.co_names, ['add'])
+
+
+if __name__=='__main__':
+    unittest.main()

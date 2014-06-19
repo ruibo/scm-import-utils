@@ -1,5 +1,5 @@
-import unittest
-from tparser import TParser
-from tcodegen import TestCodeGen
+from test_parser import TestParser, TestTokenizer
+from test_codegen import TestCodeGen
 
+import unittest
 unittest.main()
